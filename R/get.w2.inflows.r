@@ -1,0 +1,47 @@
+## Write CEQUAL modeled estimated withdrawals (qwd.npt file)
+# Before you attempt this, make sure that you have created flow and precip files
+#  This function will read those to find the estimated withdrawal
+get.w2.inflows<-function(path=NA,
+                         q.rows=list(QIN=1:4,QTR=1:2,QDT=1),#  rows of the control file to read
+                         d.avg=T){ #,first.day=1
+  directory=getwd()
+  setwd(path)
+  # get inflows and model output
+  w2lns<-readLines('w2_con.npt')
+  QinNms<-c("QIN FILE","QTR FILE","QDT FILE")
+  QinNms<-QinNms[unlist(sapply(names(q.rows),grep,QinNms))]
+  qinLines<-unlist(sapply(QinNms,grep,w2lns))
+  q.rows<-unlist(mapply(function(x,y){return((x+y)-1)},x=qinLines,y=q.rows))
+  #q.rows<-q.rows-1
+  q.nms<-mapply(scan,file='w2_con.npt',what='character',
+             #skip=qinLines,
+             skip=q.rows,
+             nlines=1,sep='',quiet=T)
+  print(q.nms)
+  npt.names<-apply(q.nms,2,function(x)x[length(x)])
+  npt.names<-gsub('[\\]','/',npt.names)
+  print(npt.names)
+
+  #################################################################################
+  # read in each flow INPUT files, then take a daily average of the flow
+  #source(paste(directory,'/r_functions/read.interp.r',sep=''))
+  all.qin<-sapply(npt.names,read.interp,d.avg=d.avg) #,first.day=first.day)
+  all.qin<-as.data.frame(all.qin)
+  if(ncol(all.qin)>2){
+      Qs<-all.qin[,1]
+      for(i in 2:ncol(all.qin)){
+          Qs<-merge(Qs,all.qin[,i],by='JDAY')
+      }
+      colnames(Qs)[-1]<-npt.names
+      # add all flow inputs
+      Qs$Total.Qin<-apply(Qs[,-1],1,sum,na.rm=T)
+  }else{Qs<-as.data.frame(all.qin[[1]])
+        print(str(Qs))#;print(str(as.data.frame(Qs[[1]])))
+        print(colnames(Qs))
+        colnames(Qs)[2]<-'Total.Qin'
+    }
+  #Qs[,-1]<-Qs[,-1]*35.314666 # convert to cfs for plotting!!
+  print(summary(Qs))#;head(Qs);#plot(Qs)
+  setwd(directory)
+  return(Qs[,c('JDAY','Total.Qin')])
+}
