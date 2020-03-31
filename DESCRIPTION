@@ -11,4 +11,5 @@ RoxygenNote: 7.0.2
 Imports:
     gdata,
     reshape2,
-    ggplot2
+    ggplot2,
+	zoo
