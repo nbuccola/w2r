@@ -1,3 +1,13 @@
+#' Merge 2 dataframes by JDAY
+#'
+#' @param df1 dataframe; with JDAY column and another column with the data
+#' @param df2 dataframe; with JDAY column and another column with the data
+#' @return a dataframe with JDAY as the first column
+#' @author Norman Buccola
+#' @keywords merge 2 dataframes by JDAY
+#' @examples
+#' merge.by.jday()
+#' @export
 merge.by.jday<-function(df1,df2){
   #make sure that JDAY is in the first column of each data.frame
   df1$JDAY<-round(df1$JDAY,2);df2$JDAY<-round(df2$JDAY,2)
@@ -9,9 +19,18 @@ merge.by.jday<-function(df1,df2){
   big.df[JDAY%in%df2.sub$JDAY,(1+ncol(df1.sub)):ncol(big.df)]<-df2.sub[df2.sub$JDAY%in%JDAY,-1]
   colnames(big.df)[-1]<-c(colnames(df1)[-1],colnames(df2)[-1])
   return(big.df)}
-########################################################################
-#merge the data.frames by JDAY
-########################################################################
+
+#' Merge 2 dataframes by JDAY
+#'
+#' @param df1 dataframe; with JDAY column and another column with the data
+#' @param df2 dataframe; with JDAY column and another column with the data
+#' @param return.nas logical; Include missing values?
+#' @return a dataframe with JDAY as the first column
+#' @author Norman Buccola
+#' @keywords merge 2 dataframes by JDAY
+#' @examples
+#' merge.by.jday()
+#' @export
 merge.interp<-function(x1,x2,return.nas=T){
      #this assumes the first column is JDAY
    x1<-as.data.frame(x1);x2<-as.data.frame(x2)
@@ -34,6 +53,17 @@ merge.interp<-function(x1,x2,return.nas=T){
    return(x)
 }
 
+#' Merge 2 dataframes by JDAY with hourly data
+#'
+#' @param x1 dataframe; with JDAY column and another column with the data
+#' @param x2 dataframe; with JDAY column and another column with the data
+#' @param return.nas logical; Include missing values?
+#' @return a dataframe with JDAY as the first column
+#' @author Norman Buccola
+#' @keywords merge dataframes by JDAY
+#' @examples
+#' merge.interp.24hr()
+#' @export
 merge.interp.24hr<-function(x1,x2,return.nas=T){
      #this assumes the first column is JDAY
    x1<-as.data.frame(x1);x2<-as.data.frame(x2)
