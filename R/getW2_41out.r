@@ -6,7 +6,7 @@
 #' @param modOutDetails Dataframe with columns: Dir, SegmentOutput, and wb columns
 #' @param sumOutTable Logical; include the summary table output defaults to TRUE
 #' @param davg character vector, typically c('avg','max','min')
-#' @return a data.frame of the model to observed fit statistics}
+#' @return a data.frame of the model to observed fit statistics
 #' @author Norman Buccola
 #' @keywords CEQUALW2 model output post-processing
 #' @examples
