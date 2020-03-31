@@ -1,5 +1,20 @@
-calcEmergenceTiming<-function(tout, #tout is a dataframe with the first column as a numeric Julian day 
-                              
+#' Calculate the estimated egg emergence timing based on cumulative degree-days of water temperature time-series data
+#'
+#' @param tout dataframe; tout is a dataframe with the first column as a numeric Julian day
+#' @param atu.day numeric; the day in which to start the emergence calculation, default = 263
+#' @param davg logical; calculate based on daily average, default = TRUE
+#' @param interpMissing logical, interpolate missing values? Default = TRUE
+#' @param hatchValue numeric, the value in which eggs are assumed to hatch. Defaults to 1750
+#' @return
+#' \item{atu.d is a dataframe with numeric JDAY dates}
+#' \item{atu is a dataframe with month and day units for the date}
+#' @author Norman Buccola
+#' @keywords calculate emergence timing CEQUALW2 water temperature
+#' @examples
+#' calcEmergenceTiming()
+#' @export
+calcEmergenceTiming<-function(tout,
+
                               atu.day=263, #atu.day is the day in which to start the emergence calculation
                               davg=T,
                               interpMissing=T,
@@ -24,7 +39,7 @@ calcEmergenceTiming<-function(tout, #tout is a dataframe with the first column a
   }else{
     atu.temps<-tout[tout$JDAY>atu.day,]
   }
-  
+
     if(mean(atu.temps[,2],na.rm=T)<32){
         atu.temps[,-1]<-atu.temps[,-1]*(9/5)+32 # convert to F
     }

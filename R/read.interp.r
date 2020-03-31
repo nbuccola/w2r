@@ -1,5 +1,16 @@
-#################################################################################
-# read in each flow INPUT files, then take a daily average of the flow
+#' Read in each flow INPUT files, then take a daily average of the flow from a CE-QUAL-W2 model
+#'
+#' @param npt character; name of file to read
+#' @param pre logical; precip file?
+#' @param d.avg logical; daily averaging? Defaults to TRUE
+#' @param first.day logical; first day to start getting data
+#' @param area.acres numeric; area of reservoir in acres to convert rainfall to pre.npt file
+#' @return a data.frame with the model inflows
+#' @author Norman Buccola
+#' @keywords CEQUALW2 model output post-processing read files
+#' @examples
+#' read.interp()
+#' @export
 read.interp<-function(npt,pre=F,d.avg=T,first.day=NA,area.acres=3500){
     print(npt)
     firstLine<-readLines(npt,4)[4]
@@ -33,6 +44,6 @@ read.interp<-function(npt,pre=F,d.avg=T,first.day=NA,area.acres=3500){
   if(is.na(qout$Q[1])) qout$Q[1]<-0
     #qout$Q<-na.approx(qout$Q)
     qout$Q<-approx(y=qout$Q,x=qout$JDAY,xout=qout$JDAY,rule=2)$y
-    
+
   print(str(qout))
     return(qout)}

@@ -1,3 +1,14 @@
+#' This function will modify the control file for a CE-QUAL-W2 model (w2_con.npt)
+#'
+#' @param path character; model directory to read from
+#' @param seg numeric; which segment to extract from the model?
+#' @param wb numeric; which water body to lookup in the model?
+#' @return re-writes a new w2_con.npt file
+#' @author Norman Buccola
+#' @keywords CEQUALW2 model read w2_con.npt
+#' @examples
+#' modifyW2con()
+#' @export
 modifyW2con<-function(path,qdt="OFF",
                       seg, #Segment to look up
                       wb #Water body to look at

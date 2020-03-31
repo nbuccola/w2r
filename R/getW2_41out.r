@@ -12,7 +12,6 @@
 #' @examples
 #' getW2_41out()
 #' @export
-#' ###############################################################
 getW2_41out<-function(mod.path=w2Dirs[w2ioi],
                       atu.day=atu.day,
                       tcrit=NULL, #Optional dataframe with critical fish temperatures and days

@@ -1,6 +1,14 @@
-## Write CEQUAL modeled estimated withdrawals (qwd.npt file)
-# Before you attempt this, make sure that you have created flow and precip files
-#  This function will read those to find the estimated withdrawal
+#' This function will extract the inflows to a CE-QUAL-W2 model
+#'
+#' @param path character; model directory to read from
+#' @param q.rows list; rows of the control file to read defaults to q.rows=list(QIN=1:4,QTR=1:2,QDT=1)
+#' @param d.avg logical; daily averaging? Defaults to TRUE
+#' @return a data.frame with the model inflows
+#' @author Norman Buccola
+#' @keywords CEQUALW2 model output post-processing read inflows sum
+#' @examples
+#' get.w2.inflows()
+#' @export
 get.w2.inflows<-function(path=NA,
                          q.rows=list(QIN=1:4,QTR=1:2,QDT=1),#  rows of the control file to read
                          d.avg=T){ #,first.day=1

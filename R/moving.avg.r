@@ -1,3 +1,13 @@
+#' Calculate moving averages
+#'
+#' @param x dataframe; with JDAY column and another column with the data
+#' @param nwindow numeric; averaging window
+#' @return a dataframe with daily averages
+#' @author Norman Buccola
+#' @keywords moving average
+#' @examples
+#' moving.avg()
+#' @export
 moving.avg<-function(x,nwindow){
     ###nwindow is the moving average time window
     # x is a dataframe with a JDAY column and another column with the data
@@ -21,6 +31,16 @@ moving.avg<-function(x,nwindow){
     return(x[,c("JDAY","smooth")])
     }
 
+#' Calculate moving averages on columns
+#'
+#' @param x dataframe; with JDAY column and another column with the data
+#' @param nwindow numeric; averaging window
+#' @return a dataframe with daily averages
+#' @author Norman Buccola
+#' @keywords moving average on columns
+#' @examples
+#' moving.avg.oncols()
+#' @export
 moving.avg.oncols<-function(x,nwindow){
     jdcol<-match("JDAY",colnames(x))
     x.s<-x;x.s[,-jdcol]<-NA

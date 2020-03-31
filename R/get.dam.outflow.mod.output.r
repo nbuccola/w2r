@@ -1,5 +1,16 @@
-###############################################################################
-# Get model output for the outflow at the dam
+#' This function will extract simulated CE-QUAL-W2 outflows from a dam
+#'
+#' @param qwo.textfile character; name of the model outflow file to read
+#' @param two.textfile character; name of the model outflow temperature file to read
+#' @param str.txt character; prefix of the name of the model str file to read
+#' @param withdrawals numeric; how many withdrawals; defaulst to 0
+#' @param const character; constituent to read - defaults to 'ELWS'
+#' @return a data.frame of the model output
+#' @author Norman Buccola
+#' @keywords CEQUALW2 model output post-processing
+#' @examples
+#' get.dam.outflow.mod.output()
+#' @export
 get.dam.outflow.mod.output<-
   function(qwo.textfile=NA,#'qwo_25',
            seg=NA,#only need tsr.txt if you need WSELV #tsr.txt=NA,
