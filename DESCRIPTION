@@ -12,4 +12,5 @@ Imports:
     gdata,
     reshape2,
     ggplot2,
-	zoo
+	zoo,
+	foreach
