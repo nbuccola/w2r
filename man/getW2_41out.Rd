@@ -27,7 +27,7 @@ getW2_41out(
 \item{davg}{character vector, typically c('avg','max','min')}
 }
 \value{
-
+a data.frame of the model to observed fit statistics
 }
 \description{
 This function will extract simulated CE-QUAL-W2 lake elevation, outflows, inflows, and outflow temperature
