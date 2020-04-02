@@ -1,7 +1,5 @@
 #' Apply daily average on columns of dataframe
 #'
-#' Function to apply a daily average on the columns of a dataframe v0.1 2020-03-02
-#'
 #' @param mod.wo character; A data frame with JDAY (numeric) as the first column in sub-daily timesteps
 #' @param daystep numeric; timestep (in days) to calculate average over
 #' @param ignoreQzeros logical; ignores zero flows in daily averaging !!!
@@ -14,11 +12,11 @@
 #' @examples
 #' apply.davg.oncols()
 #' @export
-apply.davg.oncols<-function(mod.wo, # A data frame with JDAY as the first column
-                            daystep=1, # timestep (in days) to calculate average over
-                            ignoreQzeros=F,  # ignores zero flows in daily averaging !!!
-                            calc.max=F, # if true, calculate the daily max, not the daily average!
-                            calc.min=F # if true, calculate the daily min, not the daily average!
+apply.davg.oncols<-function(mod.wo,
+                            daystep=1,
+                            ignoreQzeros=F,
+                            calc.max=F,
+                            calc.min=F
 ){
     mod.wo<-mod.wo[is.numeric(mod.wo$JDAY),]
     firstday=mod.wo$JDAY[1]
