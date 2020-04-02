@@ -4,7 +4,7 @@
 #'
 #' @param out dataframe with measured data in first column, simulated in second column. No missing values allowed.
 #' @return
-#' \item{a dataframe with the number of observations (N), root mean squared error (RMSE), nash-sutcliffe error (NS), mean error (ME), mean absolute error (MAE), Kendall tau correlation coefficient (COR), SMAPE=SMAPE}
+#' \item{x}{a dataframe with the number of observations (N), root mean squared error (RMSE), nash-sutcliffe error (NS), mean error (ME), mean absolute error (MAE), Kendall tau correlation coefficient (COR), SMAPE=SMAPE}
 #' @author Norman Buccola
 #' @keywords error fit CEQUALW2 water balance
 #' @examples

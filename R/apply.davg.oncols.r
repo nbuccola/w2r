@@ -6,7 +6,7 @@
 #' @param calc.max logical; if true, calculate the daily max, not the daily average!
 #' @param calc.min logical; if true, calculate the daily min, not the daily average!
 #' @return
-#' \item{a dataframe with daily data instead of sub-daily}
+#' \item{davg.out}{a dataframe with daily data instead of sub-daily}
 #' @author Norman Buccola
 #' @keywords daily average CEQUALW2 water balance
 #' @examples
@@ -16,8 +16,7 @@ apply.davg.oncols<-function(mod.wo,
                             daystep=1,
                             ignoreQzeros=F,
                             calc.max=F,
-                            calc.min=F
-){
+                            calc.min=F){
     mod.wo<-mod.wo[is.numeric(mod.wo$JDAY),]
     firstday=mod.wo$JDAY[1]
     lastday=mod.wo$JDAY[nrow(mod.wo)]

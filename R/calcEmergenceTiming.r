@@ -6,20 +6,18 @@
 #' @param interpMissing logical, interpolate missing values? Default = TRUE
 #' @param hatchValue numeric, the value in which eggs are assumed to hatch. Defaults to 1750
 #' @return
-#' \item{atu.d is a dataframe with numeric JDAY dates}
-#' \item{atu is a dataframe with month and day units for the date}
+#' \item{atu.d}{a dataframe with numeric JDAY dates}
+#' \item{atu}{a dataframe with month and day units for the date}
 #' @author Norman Buccola
 #' @keywords calculate emergence timing CEQUALW2 water temperature
 #' @examples
 #' calcEmergenceTiming()
 #' @export
 calcEmergenceTiming<-function(tout,
-
                               atu.day=263, #atu.day is the day in which to start the emergence calculation
                               davg=T,
                               interpMissing=T,
-                              hatchValue=1750
-                              ){
+                              hatchValue=1750){
   if(interpMissing){
     if(any(!is.na(tout$JDAY<atu.day)) & floor(tout$JDAY[1])<=2){
        jd<-1:366

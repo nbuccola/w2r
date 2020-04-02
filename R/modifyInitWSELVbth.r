@@ -5,8 +5,6 @@
 #' @param path Define the model path in a character string
 #' @param newInitWSELV numeric; New initial WSELV to be in meters - note: If not NA, the initial water level in the bathymetry file will be re-written to this value!
 #' @param wb numeric CE-QUAL-W2 waterbody to look at
-#' @return
-#' \item{will re-write the bathymetry file to have a new initial water surface as defined by newInitWSELV}
 #' @author Norman Buccola
 #' @keywords CEQUALW2 water balance
 #' @examples
