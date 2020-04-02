@@ -63,6 +63,7 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
         )
   tnm<-'mod.t'
   qnm<-'mod.q|Q'
+
   if(exists('outlets')){
     floaters.exist<-any(!is.na(outlets$floaters)) & length(outlets$floaters)>1
       if((floaters.exist|any(!unlist(sapply(outlets$power,is.finite)))) &

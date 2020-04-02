@@ -44,7 +44,12 @@ readW2Selective<-function(path=path){
     }
     priorities[priorities<0]<-NA
     # !assume that the highest priority outlet is the power outlet!
-    power<-which.outs[which.min(priorities)]
+    #browser()
+    if(all(is.na(priorities))){
+      power<-NA
+    }else{
+      power<-which.outs[which.min(priorities)]
+    }
   }else{
     split2<-split2[,c(2,3)]
     power<-floaters<-as.list(rep(NA,splitNum))
