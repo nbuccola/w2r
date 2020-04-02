@@ -24,10 +24,10 @@ apply.davg.oncols(
 \item{calc.min}{logical; if true, calculate the daily min, not the daily average!}
 }
 \value{
-\item{a dataframe with daily data instead of sub-daily}
+\item{davg.out}{a dataframe with daily data instead of sub-daily}
 }
 \description{
-Function to apply a daily average on the columns of a dataframe v0.1 2020-03-02
+Apply daily average on columns of dataframe
 }
 \examples{
 apply.davg.oncols()

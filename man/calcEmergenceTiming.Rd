@@ -24,8 +24,8 @@ calcEmergenceTiming(
 \item{hatchValue}{numeric, the value in which eggs are assumed to hatch. Defaults to 1750}
 }
 \value{
-\item{atu.d is a dataframe with numeric JDAY dates}
-\item{atu is a dataframe with month and day units for the date}
+\item{atu.d}{a dataframe with numeric JDAY dates}
+\item{atu}{a dataframe with month and day units for the date}
 }
 \description{
 Calculate the estimated egg emergence timing based on cumulative degree-days of water temperature time-series data

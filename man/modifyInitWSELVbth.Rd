@@ -13,9 +13,6 @@ modifyInitWSELVbth(path, newInitWSELV = NA, wb)
 
 \item{wb}{numeric CE-QUAL-W2 waterbody to look at}
 }
-\value{
-\item{will re-write the bathymetry file to have a new initial water surface as defined by newInitWSELV}
-}
 \description{
 Function to re-write the initial water surface within the bathymetry file of a CE-QUAL-W2 model v0.3 2020-03-02
 }

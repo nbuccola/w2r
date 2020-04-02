@@ -10,7 +10,7 @@ errs(out)
 \item{out}{dataframe with measured data in first column, simulated in second column. No missing values allowed.}
 }
 \value{
-\item{a dataframe with the number of observations (N), root mean squared error (RMSE), nash-sutcliffe error (NS), mean error (ME), mean absolute error (MAE), Kendall tau correlation coefficient (COR), SMAPE=SMAPE}
+\item{x}{a dataframe with the number of observations (N), root mean squared error (RMSE), nash-sutcliffe error (NS), mean error (ME), mean absolute error (MAE), Kendall tau correlation coefficient (COR), SMAPE=SMAPE}
 }
 \description{
 Function to compute the fit statistics of model and measured data v0.1 2020-03-02
