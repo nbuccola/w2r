@@ -184,7 +184,7 @@ waterBalance<-function(opt.txt=NA,
       new.npt.filename<-append.filename
 
       # if you want to append an older distributed trib inflow file, specify it here
-      csvfrmt <- grepl('./$',readLines(file.path(path,append.filename),1))
+      csvfrmt <- readChar(npt,1) == '$'
       if(csvfrmt){
          oldwatbalance<-read.csv(file.path(path,append.filename),skip=3,
            col.names=c('JDAY','Old_Qdt'),stringsAsFactors = F)
