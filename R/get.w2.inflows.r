@@ -33,6 +33,7 @@ get.w2.inflows<-function(path=NA,
   #################################################################################
   # read in each flow INPUT files, then take a daily average of the flow
   #source(paste(directory,'/r_functions/read.interp.r',sep=''))
+  source('C:/Users/g2echnb9/Documents/R/w2r/R/read.interp.r')
   all.qin<-sapply(npt.names,read.interp,d.avg=d.avg) #,first.day=first.day)
   all.qin<-as.data.frame(all.qin)
   if(ncol(all.qin)>2){

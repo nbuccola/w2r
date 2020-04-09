@@ -2,7 +2,7 @@
 #'
 #' @param path character; model directory to read from
 #' @param seg numeric; which segment to extract from the model?
-#' @param wb numeric; which water body to lookup in the model?
+#' @param branch numeric; which branch to extract from the model?
 #' @return re-writes a new w2_con.npt file
 #' @author Norman Buccola
 #' @keywords CEQUALW2 model read w2_con.npt
@@ -11,7 +11,7 @@
 #' @export
 modifyW2con<-function(path,qdt="OFF",
                       seg, #Segment to look up
-                      wb #Water body to look at
+                      branch #Branch to look at
                       ){
   w2Pth<-paste0(path,'/w2_con.npt')
   w2slns<-readLines(w2Pth)
@@ -24,7 +24,7 @@ modifyW2con<-function(path,qdt="OFF",
                            function(x){xe<-grep('^[[:space:]]*$',w2slns[x:length(w2slns)])[1]-1
                            return(xe+x)}))
   # only applied to lop-dex and hcr so far
-  branch<-wb
+  #branch<-wb
 
   #for(i in 1:length(vars)){
     i=1
@@ -38,8 +38,7 @@ modifyW2con<-function(path,qdt="OFF",
 
     varnum<-read.fwf(w2Pth,widths=widths,stringsAsFactors = F,
                      skip=npt.lines[i]-1,n=end.lines[i]-npt.lines[i])
-
-    varnum[wb+1,2]<-qdt
+    varnum[branch+1,2]<-qdt
 
     print(paste('Changing', qdtSwitch, 'to', qdt, 'in',w2Pth))
     # Rewrite w2con.npt

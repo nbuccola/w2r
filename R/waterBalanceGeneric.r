@@ -49,6 +49,7 @@ waterBalance<-function(opt.txt=NA,
   }
   #str(mod.opt); head(mod.opt)
   #############Get the measured elevations and compare#########
+  print(paste0("Comparing Model to ",file.path(path,meas.elvs)))
   if(version>=4){
     elvs<-read.csv(file.path(path,meas.elvs), header=TRUE,stringsAsFactors = F,skip=2)#[,c(1,3)]
     colnames(elvs)<-c('JDAY','ELWS')
@@ -66,7 +67,7 @@ waterBalance<-function(opt.txt=NA,
       elvs<-elvs[-missing.rows,]
   }
   elvs<-data.frame(JDAY=mod.opt$JDAY,
-                   ForebayEL_m=approx(x=elvs[,1],y=elvs[,2],xout=mod.opt$JDAY)$y)
+                   ForebayEL_m=approx(x=elvs[,1],y=elvs[,2],xout=mod.opt$JDAY,rule=2)$y)
   #str(elvs); head(elvs)
   if(!is.na(rule.curve.filename)){
    #Read in the reservoir rule curve
@@ -103,7 +104,7 @@ waterBalance<-function(opt.txt=NA,
                          meas=approx(x=elvs$JDAY,y=elvs[,2],xout=mod.opt$JDAY,rule=2)$y,
                          mod=mod.opt[,2])
   }
-
+  compElvs <- compElvs[!apply(apply(compElvs,2,is.na),1,any),]
   # Calcualte fitstats
   fitstats<-errs(compElvs[,c('meas','mod')])[,c(1,4,5)]
   if(fitstats$MAE>0.75){
@@ -181,8 +182,10 @@ waterBalance<-function(opt.txt=NA,
     if(!is.null(append.filename)){
       print(paste0('Adding new water balance (QDT) to ',append.filename))
       new.npt.filename<-append.filename
+
       # if you want to append an older distributed trib inflow file, specify it here
-      if(version>=4){
+      csvfrmt <- grepl('./$',readLines(file.path(path,append.filename),1))
+      if(csvfrmt){
          oldwatbalance<-read.csv(file.path(path,append.filename),skip=3,
            col.names=c('JDAY','Old_Qdt'),stringsAsFactors = F)
       }else{
