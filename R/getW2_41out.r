@@ -66,7 +66,7 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
 
   if(exists('outlets')){
     floaters.exist<-any(!is.na(outlets$floaters)) & length(outlets$floaters)>1
-      if((floaters.exist|any(!unlist(sapply(outlets$power,is.finite)))) &
+    if((floaters.exist|any(!unlist(sapply(outlets$power,is.finite)))) &
           !is.null(nrow(outlets$split2))){
         # Summarize by groups
         for(grp in 1:nrow(outlets$split2)){
@@ -100,7 +100,7 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
         wo$QgrpPrc[grp.i]<-round((wo$Qgrp[grp.i]/wo$mod.q[grp.i])*100)
         colnames(wo)[match(c('Tgrp','Qgrp','QgrpPrc','Egrp'),colnames(wo))]<-paste0(c('Tgrp','Qgrp','QgrpPrc','Egrp'),grp)
         }
-      }
+    }
   }
   #print(str(wo))
   wo<-wo[,!apply(apply(wo,2,is.na),2,all)]
@@ -116,17 +116,18 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
   ############################################################
   # merge daily avg. temps from each model scenario
   ########################################################
-      tcols<-match(c('JDAY','mod.t'),colnames(wo))
+      tcols<-grep(paste0('JDAY|mod.t|',paste0('T',1:9,collapse='|')),colnames(wo))
       #source(file.path(wd,'r_functions/apply.davg.oncols.r'))
       tout<-apply.davg.oncols(wo[,tcols])
       colnames(tout)[-1]<-paste0('Davg_',colnames(tout)[-1])
+      tOutCols <- match(c('JDAY','mod.t'),colnames(wo))
       if('min' %in% davg){
-        tmin<-apply.davg.oncols(wo[,tcols],calc.min=T)
+        tmin<-apply.davg.oncols(wo[,tOutCols],calc.min=T)
         colnames(tmin)[-1]<-paste0('Dmin_',colnames(tmin)[-1])
         tout<-merge(tout,tmin,by='JDAY',all=T)
       }
       if('max' %in% davg){
-        tmax<-apply.davg.oncols(wo[,tcols],calc.max = T)
+        tmax<-apply.davg.oncols(wo[,tOutCols],calc.max = T)
         colnames(tmax)[-1]<-paste0('Dmax_',colnames(tmax)[-1])
         tout<-merge(tout,tmax,by='JDAY',all=T)
       }
