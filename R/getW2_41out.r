@@ -19,17 +19,6 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
                       sumOutTable=T,
                       davg=c('avg','max','min')
                       ){
-  #source(file.path(wd,'r_functions/apply.davg.oncols.r'))
-  ##
-  # source('../r_functions/gsub.rec.r')
-  # source('../r_functions/extract.qwo-two.r')
-  # source('../r_functions/moving.avg.r')
-  # source('../r_functions/merge.by.jday.r')
-  # source('../r_functions/readW2Selective.r')
-  # source('../r_functions/gs.plot.jday.lt.r')
-  # source('../r_functions/get.w2.inflows.r')
-  # source('../r_functions/read.interp.r')
-  # source('../r_functions/calcEmergenceTiming.r')
   # cy<-gsub('cy|CY','',rev(strsplit(rev(strsplit(mod.path,"/")[[1]])[1],'_')[[1]])[1])
   cy<-gsub('cy|CY','',strsplit(rev(strsplit(modOutDetails$Dir,"/")[[1]])[1],'_')[[1]][1])
   #cy<-gsub('cy','',unique(unlist(lapply(strsplit(modOutDetails$Dir,"/"),function(x) x[[1]]))))
@@ -39,11 +28,12 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
     temp.targs<-read.fwf(file.path(mod.path,'dynsplit_selective1.npt'),
                          skip=3,widths=rep(8,2),comment.char='#')
     colnames(temp.targs)<- c("JDAY", "TTarg")
+    temp.targs$JDAY <- floor(temp.targs$JDAY)
+    temp.targs <- temp.targs[unique(temp.targs$JDAY) %in% temp.targs$JDAY,]
     #Convert temp in ferinheit to celsius
     c2f<-function(x){(x*(9/5))+32}
     f2c<-function(x){(x-32)/(9/5)}
     temp.targs[,-1]<-c2f(temp.targs[,-1])
-    str(temp.targs)
     # read in the selective.npt file
     outlets<-readW2Selective(path=mod.path)
     #print(outlets)
@@ -104,7 +94,6 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
   }
   #print(str(wo))
   wo<-wo[,!apply(apply(wo,2,is.na),2,all)]
-
   if(any(grepl(qnm,colnames(wo)))){
     qcols<-grepl(paste0('JDAY|',qnm),colnames(wo)) & !grepl('grp',colnames(wo))
     #source(file.path(wd,'r_functions/apply.davg.oncols.r'))
