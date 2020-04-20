@@ -48,7 +48,7 @@ merge.interp<-function(x1,x2,return.nas=T){
    print(paste('x2 is missing JDAY:',unique(round(new.i))[!x2i]))
    x<-merge(x1,x2,by='JDAY',all.x=T,all.y=T)
    colnames(x)<-c('JDAY',colnames(x1)[-1],colnames(x2)[-1])
-   str(x);summary(x)
+   #str(x);summary(x)
    if(!return.nas){x<-as.data.frame(na.approx(x))}
    return(x)
 }
@@ -87,18 +87,18 @@ merge.interp.24hr<-function(x1,x2,return.nas=T){
    x<-as.data.frame(matrix(NA,length(new.i),(1+ncol(x1)-1+ncol(x2)-1)))
    colnames(x)<-c('JDAY',colnames(x1)[-1],colnames(x2)[-1])
    x$JDAY<-new.i
-   print(head(x))
+   #print(head(x))
    for(j in 2:(ncol(x1))){
        x[,j]<-approx(x=x1[,1],y=x1[,j],xout=new.i,rule=1)$y
    }
    for(j in 2:(ncol(x2))){
-       print(j)
+       #print(j)
        if(length(which(!is.na(x2[,j])))>1){
            x[,(j+ncol(x1)-1)]<- approx(x=x2[,1],y=x2[,j],xout=new.i,rule=1)$y
        }
    }
    #if(return.nas)
-   str(x);summary(x)
+   #str(x);summary(x)
 #    if(!return.nas)x<-x[!apply(apply(x,2,is.na),1,any),]
 
    if(!return.nas){x<-na.approx(x)}
