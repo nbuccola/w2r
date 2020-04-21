@@ -49,7 +49,7 @@ get.w2.inflows<-function(path=NA,
         colnames(Qs)[2]<-'Total.Qin'
     }
   #Qs[,-1]<-Qs[,-1]*35.314666 # convert to cfs for plotting!!
-  print(summary(Qs))#;head(Qs);#plot(Qs)
+  #print(summary(Qs))#;head(Qs);#plot(Qs)
   setwd(directory)
   return(Qs[,c('JDAY','Total.Qin')])
 }
