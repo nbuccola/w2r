@@ -6,5 +6,9 @@ To install, try the following in R:
 install.packages('devtools')
 devtools::install_github("nbuccola/w2r") 
 library(w2r)
+# Look at the functions available:
+ls("package:w2r")
 
-For water balance tool example, check out 
+For water balance tool example, check out waterBalanceExample.r
+
+More examples to come!
