@@ -36,7 +36,7 @@ readW2ConInOut<-function(path, # path to model
   vars.in<-c("QDT FILE") #"QIN FILE","QTR FILE",
   vars.out<-"QOT FILE"
   qdtSwitch<-"DST TRIB"
-  vars<-c("NBR ","NTR ","LOCATION ",qdtSwitch,vars.in,vars.out) #,
+  vars<-c("NBR ","NTR ","LOCATION ",qdtSwitch,vars.in,vars.out)
   varnums<-as.list(rep(NA,length(vars)))
   names(varnums)<-varnames<-vars
   npt.lines<-unlist(sapply(vars,grep,w2slns))
@@ -142,7 +142,9 @@ readW2ConInOut<-function(path, # path to model
   # Read in outflows
   Qot<-read.csv(paste0(path,'/qwo_',seg,".opt"),skip=3,header=F,stringsAsFactors = F)[,c(1:2)]
   colnames(Qot)<-c('JDAY',paste0('qwo_',seg))
-  meas.elvs<-list.files(path,pattern="ELEV.csv")
+  meas.elvs<-list.files(path)
+  meas.elvs<-meas.elvs[grepl("ELEV|elev|WSELV",meas.elvs) & !grepl('png',meas.elvs)]#,pattern="ELEV.csv")
+  print(meas.elvs)
   if(length(meas.elvs)>1){
     meas.elvs<-meas.elvs[grep(RESSIMCode,meas.elvs)]
   }
@@ -170,6 +172,8 @@ readW2ConInOut<-function(path, # path to model
   opt.txt<-tsrs[grep(paste0('seg',seg),tsrs)]
   opt.txt<-opt.txt[1]
   print(paste0('Calculating Water Balance based on ',opt.txt))
+  #browser()
+  source(file.path('D:/R/w2r/R/waterBalanceGeneric.r'))
   watbal<-waterBalance(opt.txt=opt.txt, #'wl.opt', #
                        seg=seg,
                        wb=wb,

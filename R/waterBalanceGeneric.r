@@ -34,6 +34,8 @@ waterBalance<-function(opt.txt=NA,
                            save.plot=F,
                            version=4,
                            append.filename=NULL){
+  browser()
+
 # providing append.filename will append the named file with the latest water balance
   if(version>=4 ){ #|opt.txt=="wl.opt"
       mod.opt<- read.csv(file.path(path,opt.txt), header=TRUE,stringsAsFactors = F)
@@ -49,7 +51,6 @@ waterBalance<-function(opt.txt=NA,
   }
   #str(mod.opt); head(mod.opt)
   #############Get the measured elevations and compare#########
-  print(paste0("Comparing Model to ",file.path(path,meas.elvs)))
   if(version>=4){
     elvs<-read.csv(file.path(path,meas.elvs), header=TRUE,stringsAsFactors = F,skip=2)#[,c(1,3)]
     colnames(elvs)<-c('JDAY','ELWS')
@@ -67,7 +68,7 @@ waterBalance<-function(opt.txt=NA,
       elvs<-elvs[-missing.rows,]
   }
   elvs<-data.frame(JDAY=mod.opt$JDAY,
-                   ForebayEL_m=approx(x=elvs[,1],y=elvs[,2],xout=mod.opt$JDAY,rule=2)$y)
+                   ForebayEL_m=approx(x=elvs[,1],y=elvs[,2],xout=mod.opt$JDAY)$y)
   #str(elvs); head(elvs)
   if(!is.na(rule.curve.filename)){
    #Read in the reservoir rule curve
@@ -104,7 +105,7 @@ waterBalance<-function(opt.txt=NA,
                          meas=approx(x=elvs$JDAY,y=elvs[,2],xout=mod.opt$JDAY,rule=2)$y,
                          mod=mod.opt[,2])
   }
-  compElvs <- compElvs[!apply(apply(compElvs,2,is.na),1,any),]
+
   # Calcualte fitstats
   fitstats<-errs(compElvs[,c('meas','mod')])[,c(1,4,5)]
   if(fitstats$MAE>0.75){
@@ -182,10 +183,8 @@ waterBalance<-function(opt.txt=NA,
     if(!is.null(append.filename)){
       print(paste0('Adding new water balance (QDT) to ',append.filename))
       new.npt.filename<-append.filename
-
       # if you want to append an older distributed trib inflow file, specify it here
-      csvfrmt <- readChar(npt,1) == '$'
-      if(csvfrmt){
+      if(version>=4){
          oldwatbalance<-read.csv(file.path(path,append.filename),skip=3,
            col.names=c('JDAY','Old_Qdt'),stringsAsFactors = F)
       }else{
