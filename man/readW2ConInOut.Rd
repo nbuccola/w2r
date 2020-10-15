@@ -7,9 +7,9 @@
 readW2ConInOut(path, wd, seg, wb, RESSIMCode, write.files)
 }
 \arguments{
-\item{path, }{# path to model}
+\item{path, }{path to model}
 
-\item{wd, }{# Generic path to find functions}
+\item{wd, }{Generic path to find functions}
 
 \item{seg, }{#Segment to look up in w2_con.npt}
 
