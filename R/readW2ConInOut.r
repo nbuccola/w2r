@@ -30,7 +30,7 @@ readW2ConInOut<-function(path, # path to model
   # source(file.path(wd,'r_functions/apply.davg.oncols.r'))
   # source(file.path(wd,'r_functions/moving.avg.r'))
   # source(file.path(wd,'r_functions/modifyInitWSELVbth.r'))
-
+  write.files <- as.logical(write.files)
   w2Pth<-paste0(path,'/w2_con.npt')
   w2slns<-readLines(w2Pth)
   vars.in<-c("QDT FILE") #"QIN FILE","QTR FILE",
@@ -163,17 +163,22 @@ readW2ConInOut<-function(path, # path to model
     new.npt.filename<-paste0("qwb_",seg,".csv")
     print('QDT set to OFF in w2_con.npt')
   }
+  #browser()
   if(write.files){
     save.plot<-T
   }else{
     save.plot<-T
   }
-  tsrs<-list.files(path,pattern="tsr_")
-  opt.txt<-tsrs[grep(paste0('seg',seg),tsrs)]
-  opt.txt<-opt.txt[1]
-  print(paste0('Calculating Water Balance based on ',opt.txt))
   #browser()
-  source(file.path('D:/R/w2r/R/waterBalanceGeneric.r'))
+  tsrs<-list.files(path,pattern="tsr_")
+  if(length(tsrs)>1){
+    opt.txt<-tsrs[grep(paste0('seg',seg),tsrs)]
+    opt.txt<-opt.txt[1]
+  }else{
+    opt.txt<-tsrs
+  }
+  print(paste0('Calculating Water Balance based on ',opt.txt))
+  #source(file.path('C:/Users/g2echnb9/Documents/R/w2r/R/waterBalanceGeneric.r'))
   watbal<-waterBalance(opt.txt=opt.txt, #'wl.opt', #
                        seg=seg,
                        wb=wb,

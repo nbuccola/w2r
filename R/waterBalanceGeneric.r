@@ -34,7 +34,7 @@ waterBalance<-function(opt.txt=NA,
                            save.plot=F,
                            version=4,
                            append.filename=NULL){
-  browser()
+  #browser()
 
 # providing append.filename will append the named file with the latest water balance
   if(version>=4 ){ #|opt.txt=="wl.opt"
@@ -51,7 +51,8 @@ waterBalance<-function(opt.txt=NA,
   }
   #str(mod.opt); head(mod.opt)
   #############Get the measured elevations and compare#########
-  if(version>=4){
+  elvHdr <-readLines(file.path(path,meas.elvs),1)
+  if(grepl('\\$',elvHdr)){
     elvs<-read.csv(file.path(path,meas.elvs), header=TRUE,stringsAsFactors = F,skip=2)#[,c(1,3)]
     colnames(elvs)<-c('JDAY','ELWS')
   }else{
@@ -131,6 +132,7 @@ waterBalance<-function(opt.txt=NA,
   ###############read in USACE elevation/volume curve from Pre-Processor ######
   prelns<-readLines(paste0(path,'/pre.opt'))
   vars<-paste0("Waterbody ",wb," Volume-Area-Elevation Table")
+
   npt.lines<-grep(vars,prelns)+5
   end.lines<-grep(" Layer",prelns[(npt.lines):length(prelns)])[1]
   acoe.crv<-read.table(file.path(path,'pre.opt'),
@@ -142,7 +144,6 @@ waterBalance<-function(opt.txt=NA,
   acoe.crv[,2]<-acoe.crv[,2]*1E6
 
   if(write.files){
-    #browser()
 
   }
   #print(summary(acoe.crv))
@@ -175,7 +176,7 @@ waterBalance<-function(opt.txt=NA,
   if(write.files){
     # Make initial WSELV (bathymetry file) match the first day of the observed WSELV
     modifyInitWSELVbth(path=path,wb=wb,
-                       newInitWSELV=elvs[1,])
+                       newInitWSELV=elvs[1,2])
 
     #remaining.days<-(last(watbalance$JDAY)+1):366
     #zeros<-data.frame(JDAY=remaining.days,balance.cms=0)
@@ -183,8 +184,9 @@ waterBalance<-function(opt.txt=NA,
     if(!is.null(append.filename)){
       print(paste0('Adding new water balance (QDT) to ',append.filename))
       new.npt.filename<-append.filename
+      watbalHdr <- readLines(file.path(path,append.filename),1)
       # if you want to append an older distributed trib inflow file, specify it here
-      if(version>=4){
+      if(grepl('\\$',watbalHdr)){
          oldwatbalance<-read.csv(file.path(path,append.filename),skip=3,
            col.names=c('JDAY','Old_Qdt'),stringsAsFactors = F)
       }else{
@@ -219,7 +221,11 @@ waterBalance<-function(opt.txt=NA,
                                       watbalance[nrow(watbalance),]))
       watbalance[nrow(watbalance),]<-c(366,0)
     }
-
+    # Set a min/max flow
+    maxQ <- 1000
+    minQ <- -1000
+    watbalance[watbalance[,2]>maxQ,2] <- maxQ
+    watbalance[watbalance[,2]<minQ,2] <- minQ
     write(paste('$#', new.npt.filename,'Water Balance; distributed tributary (cms) ',
                 format(Sys.time(), "%Y-%m-%d_%H:%M")),file.path(path,new.npt.filename))
     write('#',file.path(path,new.npt.filename),append=T)

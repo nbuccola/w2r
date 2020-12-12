@@ -36,21 +36,48 @@ modifyInitWSELVbth<-function(path,
     varnum<-read.fwf(w2Pth,widths=widths,stringsAsFactors = F,
                      skip=npt.lines[i]-1,n=end.lines[i]-npt.lines[i])
     bthPth<-file.path(path,varnum[wb+1,2])
-    bthlns<-readLines(bthPth)
-    blankLines<-grep("^$",bthlns)
-    widths<-rep(8,10)
-    initELWS<-read.fwf(file.path(path,varnum[wb+1,2]),widths=widths,stringsAsFactors = F,
-                       skip=blankLines[2]+1,n=blankLines[3]-blankLines[2]-2)
-    initELWSval<-unique(apply(initELWS,1,unique))[[1]]
-    print(paste('Changing Initial WSELV in ',bth,'from',initELWSval,'to',newInitWSELV[,2]))
-    initELWS[!is.na(initELWS)]<-round(newInitWSELV[,2],3)
-    bthTop<-bthlns[1:(blankLines[2]+1)]
-    bthBot<-bthlns[blankLines[3]:length(bthlns)]
-    # Rewrite Bathymetry file
-    write(bthTop,file =bthPth,append = F,ncolumns = 1)
-    write.fwf(initELWS,file = bthPth,
-              na = "",justify='right',sep="",
-              width=widths,append = T,colnames = F)
-    write(bthBot,file =bthPth,append = T,ncolumns = 1)
+    if(grepl('.csv',bthPth)){
+      #read in grid
+      bthlns<-readLines(bthPth)
+      blankLines<-grep("^$",bthlns)
+      widths<-rep(8,10)
+      w2grid<-read.csv(bthPth,header=T,skip=1,stringsAsFactors = F)
+      initELWS<-na.omit(as.numeric(w2grid[2,-1]))
+      initELWSval<-unique(initELWS)[1]
+      print(paste('Changing Initial WSELV in ',bth,'from',initELWSval,'to',newInitWSELV))
+      initELWS[!is.na(initELWS)]<-round(newInitWSELV,3)
+      if(length(blankLines)!=0){
+        bthTop<-bthlns[1:(blankLines[2]+1)]
+        bthBot<-bthlns[blankLines[3]:length(bthlns)]
+      }else{
+        bthTop<-bthlns[1:3]
+        bthBot<-bthlns[5:length(bthlns)]
+      }
+      # Rewrite Bathymetry file
+      write(bthTop,file =bthPth,append = F,ncolumns = 1)
+      write.table(t(c('ELWS',initELWS,"")),file = bthPth,sep=",",quote = F,
+                  append = T,col.names = F,row.names = F)
+      write(bthBot,file =bthPth,append = T,ncolumns = 1)
+
+    }else{
+      #read in grid
+      bthlns<-readLines(bthPth)
+      blankLines<-grep("^$",bthlns)
+      widths<-rep(8,10)
+      initELWS<-read.fwf(file.path(path,varnum[wb+1,2]),widths=widths,stringsAsFactors = F,
+                         skip=blankLines[2]+1,n=blankLines[3]-blankLines[2]-2)
+      initELWSval<-unique(apply(initELWS,1,unique))[[1]]
+      print(paste('Changing Initial WSELV in ',bth,'from',initELWSval,'to',newInitWSELV[,2]))
+      initELWS[!is.na(initELWS)]<-round(newInitWSELV[,2],3)
+      bthTop<-bthlns[1:(blankLines[2]+1)]
+      bthBot<-bthlns[blankLines[3]:length(bthlns)]
+      # Rewrite Bathymetry file
+      write(bthTop,file =bthPth,append = F,ncolumns = 1)
+      write.fwf(initELWS,file = bthPth,
+                na = "",justify='right',sep="",
+                width=widths,append = T,colnames = F)
+      write(bthBot,file =bthPth,append = T,ncolumns = 1)
+
+    }
 
 }
