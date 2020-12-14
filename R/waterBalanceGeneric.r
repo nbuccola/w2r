@@ -108,7 +108,7 @@ waterBalance<-function(opt.txt=NA,
   }
 
   # Calcualte fitstats
-  fitstats<-errs(compElvs[,c('meas','mod')])[,c(1,4,5)]
+  fitstats<-w2r::errs(compElvs[,c('meas','mod')])[,c(1,4,5)]
   if(fitstats$MAE>0.75){
     save.plot<-T
   }else{
