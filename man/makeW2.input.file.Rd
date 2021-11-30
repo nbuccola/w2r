@@ -2,8 +2,7 @@
 % Please edit documentation in R/makeW2.input.file.r
 \name{makeW2.input.file}
 \alias{makeW2.input.file}
-\title{\subsection{Write npt file for CE-QUAL-W2}{
-}}
+\title{## Write npt file for CE-QUAL-W2}
 \usage{
 makeW2.input.file(
   x.df,
@@ -31,8 +30,7 @@ makeW2.input.file(
 a data.frame if writefiles == F
 }
 \description{
-\subsection{Write npt file for CE-QUAL-W2}{
-}
+## Write npt file for CE-QUAL-W2
 }
 \examples{
 makeW2.input.file()

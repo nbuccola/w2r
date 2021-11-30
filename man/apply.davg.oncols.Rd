@@ -27,7 +27,7 @@ apply.davg.oncols(
 \item{davg.out}{a dataframe with daily data instead of sub-daily}
 }
 \description{
-Apply daily average on columns of dataframe
+Function to apply a daily average on the columns of a dataframe v0.1 2020-03-02
 }
 \examples{
 apply.davg.oncols()

@@ -4,14 +4,14 @@
 \alias{modifyW2con}
 \title{This function will modify the control file for a CE-QUAL-W2 model (w2_con.npt)}
 \usage{
-modifyW2con(path, qdt = "OFF", seg, branch)
+modifyW2con(path, qdt = "OFF", seg, wb)
 }
 \arguments{
 \item{path}{character; model directory to read from}
 
 \item{seg}{numeric; which segment to extract from the model?}
 
-\item{branch}{numeric; which branch to extract from the model?}
+\item{wb}{numeric; which water body to lookup in the model?}
 }
 \value{
 re-writes a new w2_con.npt file
