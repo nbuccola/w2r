@@ -56,7 +56,7 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
 
   if(exists('outlets')){
     floaters.exist<-any(!is.na(outlets$floaters)) & length(outlets$floaters)>1
-    if((floaters.exist|any(!unlist(sapply(outlets$power,is.finite)))) &
+      if((floaters.exist|any(!unlist(sapply(outlets$power,is.finite)))) &
           !is.null(nrow(outlets$split2))){
         # Summarize by groups
         for(grp in 1:nrow(outlets$split2)){
@@ -72,7 +72,6 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
                 tgrp.cols<-match(paste0('T',outlets$power[[grp]]),colnames(wo))
                 egrp.cols<-match(paste0('E',outlets$power[[grp]]),colnames(wo))
             }
-            #browser()
 
             if(length(qgrp.cols)>1){
                 # Flow-weighted average temperature
@@ -90,10 +89,11 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
         wo$QgrpPrc[grp.i]<-round((wo$Qgrp[grp.i]/wo$mod.q[grp.i])*100)
         colnames(wo)[match(c('Tgrp','Qgrp','QgrpPrc','Egrp'),colnames(wo))]<-paste0(c('Tgrp','Qgrp','QgrpPrc','Egrp'),grp)
         }
-    }
+      }
   }
   #print(str(wo))
   wo<-wo[,!apply(apply(wo,2,is.na),2,all)]
+
   if(any(grepl(qnm,colnames(wo)))){
     qcols<-grepl(paste0('JDAY|',qnm),colnames(wo)) & !grepl('grp',colnames(wo))
     #source(file.path(wd,'r_functions/apply.davg.oncols.r'))

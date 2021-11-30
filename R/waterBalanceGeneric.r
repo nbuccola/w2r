@@ -87,18 +87,23 @@ waterBalance<-function(opt.txt=NA,
   if(!is.na(daystep)){
     # use the daily average of the water elevations to eliminate noise
     print(paste0(daystep,'-Day averaging'))
-    alldays<-unique(as.integer(mod.opt$JDAY))
-    ndays<-alldays[seq(1,length(alldays),by=daystep)]
-    compElvs<-data.frame(JDAY=ndays,meas=NA,mod=NA)
-    for(i in 1:length(ndays)){
-      if(i==1){
-        compElvs$mod[i]<-mod.opt$ELWS[1]
-        compElvs$meas[i]<-elvs$ForebayEL_m[1]
-      }else{
-        compElvs$mod[i]<-mean(mod.opt$ELWS[as.integer(mod.opt$JDAY)%in%ndays[i]])
-        compElvs$meas[i]<-mean(elvs$ForebayEL_m[as.integer(elvs$JDAY)%in%ndays[i]])
-      }
-    }
+    compElvs<-data.frame(JDAY=mod.opt$JDAY) #,meas=NA,mod=NA)
+    compElvs$mod <- approx(x=mod.opt$JDAY,y=mod.opt$ELWS,xout=compElvs$JDAY)$y
+    compElvs$meas <- approx(x=elvs$JDAY,y=elvs$ForebayEL_m,xout=compElvs$JDAY)$y
+    compElvs$mod[(nrow(compElvs)-5):nrow(compElvs)] <-
+      moving.avg(compElvs[(nrow(compElvs)-5):nrow(compElvs),c('JDAY','mod')],daystep)$smooth
+    # alldays<-unique(as.integer(mod.opt$JDAY))
+    # ndays<-alldays[seq(1,length(alldays),by=daystep)]
+    # compElvs<-data.frame(JDAY=ndays,meas=NA,mod=NA)
+    # for(i in 1:length(ndays)){
+    #   if(i==1){
+    #     compElvs$mod[i]<-mod.opt$ELWS[1]
+    #     compElvs$meas[i]<-elvs$ForebayEL_m[1]
+    #   }else{
+    #     compElvs$mod[i]<-mean(mod.opt$ELWS[as.integer(mod.opt$JDAY)%in%ndays[i]])
+    #     compElvs$meas[i]<-mean(elvs$ForebayEL_m[as.integer(elvs$JDAY)%in%ndays[i]])
+    #   }
+    # }
   }else{
     # Interpolate to the model output timestep
     print('Interpolating to model output timesteps')
@@ -123,6 +128,7 @@ waterBalance<-function(opt.txt=NA,
   compElvsL<-rbind(compElvsL,compElvsDL)
   compElvs$meas.diff<-c(0,diff(compElvs$meas))
   compElvs$mod.diff<-c(0,diff(compElvs$mod))
+
   # bq<-quantile(compElvs$meas-compElvs$mod,c(0.01,0.99),na.rm=T)
   # extDays<-unique(round(compElvs$JDAY[(compElvs$meas-compElvs$mod)<bq[1] |
   #                                    (compElvs$meas-compElvs$mod)>bq[2]]))
@@ -132,7 +138,6 @@ waterBalance<-function(opt.txt=NA,
   ###############read in USACE elevation/volume curve from Pre-Processor ######
   prelns<-readLines(paste0(path,'/pre.opt'))
   vars<-paste0("Waterbody ",wb," Volume-Area-Elevation Table")
-
   npt.lines<-grep(vars,prelns)+5
   end.lines<-grep(" Layer",prelns[(npt.lines):length(prelns)])[1]
   acoe.crv<-read.table(file.path(path,'pre.opt'),
@@ -143,11 +148,6 @@ waterBalance<-function(opt.txt=NA,
   acoe.crv<-acoe.crv[!apply(apply(acoe.crv,2,is.na),1,any),]
   acoe.crv[,2]<-acoe.crv[,2]*1E6
 
-  if(write.files){
-
-  }
-  #print(summary(acoe.crv))
-  #str(acoe.crv);head(acoe.crvC
   # set up regression for volume as a function of elevation
   #crvmod<-lm('vol.m.3. ~ elev.m.',acoe.crv,);#str(crvmod);summary(crvmod)
   crvmod<-smooth.spline(x=acoe.crv[,1],y=acoe.crv[,2])
@@ -157,8 +157,6 @@ waterBalance<-function(opt.txt=NA,
   compVol$mod<-predict(crvmod,x=compElvs$mod)$y
   compVol$meas.diff<-c(0,diff(compVol$meas))
   compVol$mod.diff<-c(0,diff(compVol$mod))
-  #compVol$balance<-compVol$meas.diff-compVol$mod.diff
-  #compVol$balance.cms<-compVol$balance/rep(daystep*24*(60^2),nrow(compVol))
   compVol$balance<-compVol$meas-compVol$mod
   compVol$balance.cms<-c(0,diff(compVol$balance))/(c(diff(compVol$JDAY),0)*24*(60^2)) #((c(0,diff(compVol$JDAY))**(60^2),0)
   # Remove extreme values
@@ -181,8 +179,12 @@ waterBalance<-function(opt.txt=NA,
     #remaining.days<-(last(watbalance$JDAY)+1):366
     #zeros<-data.frame(JDAY=remaining.days,balance.cms=0)
     #watbalance<-rbind(watbalance,zeros)
+
     if(!is.null(append.filename)){
-      print(paste0('Adding new water balance (QDT) to ',append.filename))
+      # Set a max threshold elevation difference to ignore modifying the oldwaterbalance
+      maxElvDif_m <- 0.5
+      newJDAY <- compElvs$JDAY[abs(compElvs$WSELV_fit)>maxElvDif_m][1]
+      print(paste0('Adding new water balance (QDT) to ',append.filename, ' beginning on JDAY ',newJDAY))
       new.npt.filename<-append.filename
       watbalHdr <- readLines(file.path(path,append.filename),1)
       # if you want to append an older distributed trib inflow file, specify it here
@@ -193,6 +195,7 @@ waterBalance<-function(opt.txt=NA,
         oldwatbalance<-read.fwf(file.path(path,append.filename),skip=3,
                               widths=c(8,8),col.names=c('JDAY','Old_Qdt'))
       }
+      watbalance$balance.cms[watbalance$JDAY<newJDAY] <- 0
       watbalanceNew<-data.frame(
         JDAY=watbalance$JDAY,
         # Add old watbalance to new
@@ -221,11 +224,11 @@ waterBalance<-function(opt.txt=NA,
                                       watbalance[nrow(watbalance),]))
       watbalance[nrow(watbalance),]<-c(366,0)
     }
-    # Set a min/max flow
-    maxQ <- 1000
-    minQ <- -1000
-    watbalance[watbalance[,2]>maxQ,2] <- maxQ
-    watbalance[watbalance[,2]<minQ,2] <- minQ
+    obsceneVals <- abs(watbalance[,2])>1e9
+    if(any(obsceneVals)){
+      watbalance[obsceneVals,2] <- NA
+      watbalance[,2] <- na.approx(watbalance[,2])
+    }
     write(paste('$#', new.npt.filename,'Water Balance; distributed tributary (cms) ',
                 format(Sys.time(), "%Y-%m-%d_%H:%M")),file.path(path,new.npt.filename))
     write('#',file.path(path,new.npt.filename),append=T)

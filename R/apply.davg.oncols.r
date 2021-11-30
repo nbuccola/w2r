@@ -1,5 +1,7 @@
 #' Apply daily average on columns of dataframe
 #'
+#' Function to apply a daily average on the columns of a dataframe v0.1 2020-03-02
+#'
 #' @param mod.wo character; A data frame with JDAY (numeric) as the first column in sub-daily timesteps
 #' @param daystep numeric; timestep (in days) to calculate average over
 #' @param ignoreQzeros logical; ignores zero flows in daily averaging !!!

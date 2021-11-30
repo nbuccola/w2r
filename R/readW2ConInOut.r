@@ -137,13 +137,14 @@ readW2ConInOut<-function(path, # path to model
   #   Qin<-read.csv(paste0(path,'/',Qinpts),skip=2,col.names = c('JDAY',Qinpts))
   #   Qin$JDAY<-round(Qin$JDAY)
   # }
-  #qfls<-list.files(file.path(path),pattern='qwo_**.opt'))
-
+  qfls<-list.files(file.path(path),pattern=paste0('qwo_',seg,'\\**'))
   # Read in outflows
-  Qot<-read.csv(paste0(path,'/qwo_',seg,".opt"),skip=3,header=F,stringsAsFactors = F)[,c(1:2)]
+  Qot<-read.csv(file.path(path,qfls),skip=3,header=F,stringsAsFactors = F)[,c(1:2)]
   colnames(Qot)<-c('JDAY',paste0('qwo_',seg))
   meas.elvs<-list.files(path)
-  meas.elvs<-meas.elvs[grepl("ELEV|elev|WSELV",meas.elvs) & !grepl('png',meas.elvs)]#,pattern="ELEV.csv")
+  meas.elvs<-meas.elvs[grepl("ELEV|elev|WSELV",meas.elvs) &
+                       grepl(RESSIMCode,meas.elvs) &
+                       !grepl('png',meas.elvs)]#,pattern="ELEV.csv")
   print(meas.elvs)
   if(length(meas.elvs)>1){
     meas.elvs<-meas.elvs[grep(RESSIMCode,meas.elvs)]
@@ -163,22 +164,18 @@ readW2ConInOut<-function(path, # path to model
     new.npt.filename<-paste0("qwb_",seg,".csv")
     print('QDT set to OFF in w2_con.npt')
   }
-  #browser()
   if(write.files){
     save.plot<-T
   }else{
     save.plot<-T
   }
-  #browser()
   tsrs<-list.files(path,pattern="tsr_")
-  if(length(tsrs)>1){
-    opt.txt<-tsrs[grep(paste0('seg',seg),tsrs)]
-    opt.txt<-opt.txt[1]
-  }else{
-    opt.txt<-tsrs
-  }
+  opt.txt<-tsrs[grep(paste0('seg',seg),tsrs)]
+  opt.txt<-opt.txt[1]
   print(paste0('Calculating Water Balance based on ',opt.txt))
-  #source(file.path('C:/Users/g2echnb9/Documents/R/w2r/R/waterBalanceGeneric.r'))
+  #browser()
+  #source(file.path('D:/R/w2r_dev/R/waterBalanceGeneric.r'))
+  source("C:/Users/g2echnb9/Documents/R/w2r_dev/R/waterBalanceGeneric.r")
   watbal<-waterBalance(opt.txt=opt.txt, #'wl.opt', #
                        seg=seg,
                        wb=wb,
