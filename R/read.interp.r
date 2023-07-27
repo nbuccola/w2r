@@ -22,8 +22,9 @@ read.interp<-function(npt,pre=F,d.avg=T,first.day=NA,area.acres=3500){
         qin<-read.fwf(npt, widths=c(8,8),# header =T,#sep="",
                       stringsAsFactors = F,skip=3,col.names=c('JDAY',npt))
     }
-  if(is.na(first.day)){first.day<-qin$JDAY[!is.na(qin[,"JDAY"])][1]
-                   }
+  if(is.na(first.day)|!is.numeric(first.day)){
+    first.day<-qin$JDAY[!is.na(qin[,"JDAY"])][1]
+  }
   last.day<-qin$JDAY[length(which(!is.na(qin$JDAY)))]
   qin.fall<-qin[qin$JDAY>first.day&qin$JDAY<last.day,]
   tm<-seq(first.day,last.day,by=0.04166667)#note that this will interpolate values !!!

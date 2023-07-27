@@ -7,8 +7,8 @@
 #' @param seg, #Segment to look up in w2_con.npt
 #' @param wb, #Water body to look up in w2_con.npt
 #' @param RESSIMCode, #RES-SIM name for boundary conditions
+#' @param elvVolCrvFl, #Elevation - Volume Curve
 #' @param write.files #T/F on whether or not to write file
-
 #' @return
 #' \item{watbal}{output from the waterBalance function}
 #' @author Norman Buccola
@@ -22,6 +22,7 @@ readW2ConInOut<-function(path, # path to model
                          seg, #Segment to look up
                          wb, #Water body to look at
                          RESSIMCode, #RES-SIM name for boundary conditions
+                         elvVolCrvFl, # Elevation - Volume Curve
                          write.files #T/F on whether or not to write file
                          ){
   #setwd(wd)
@@ -145,11 +146,19 @@ readW2ConInOut<-function(path, # path to model
   meas.elvs<-meas.elvs[grepl("ELEV|elev|WSELV",meas.elvs) &
                        grepl(RESSIMCode,meas.elvs) &
                        !grepl('png',meas.elvs)]#,pattern="ELEV.csv")
+  if(length(meas.elvs)<1){
+    meas.elvsFldr<-strsplit(npti,'\\\\')[[1]]
+    yr <- strsplit(meas.elvsFldr[length(meas.elvsFldr)],'_')[[1]]
+    yr <- gsub('.csv','',yr[length(yr)]) #as.numeric(gsub("\\D","",
+    meas.elvsFldr <- meas.elvsFldr[-length(meas.elvsFldr)]
+    meas.elvs<-file.path(paste(meas.elvsFldr,sep="", collapse="//"),
+                         paste0(yr,'_',RESSIMCode,'-POOLELEV.csv'))
+  }
+
   print(meas.elvs)
   if(length(meas.elvs)>1){
     meas.elvs<-meas.elvs[grep(RESSIMCode,meas.elvs)]
   }
-
   ##########################
   #Execute the water balance
   ##########################
@@ -173,13 +182,12 @@ readW2ConInOut<-function(path, # path to model
   opt.txt<-tsrs[grep(paste0('seg',seg),tsrs)]
   opt.txt<-opt.txt[1]
   print(paste0('Calculating Water Balance based on ',opt.txt))
-  #browser()
-  #source(file.path('D:/R/w2r_dev/R/waterBalanceGeneric.r'))
   source("C:/Users/g2echnb9/Documents/R/w2r_dev/R/waterBalanceGeneric.r")
   watbal<-waterBalance(opt.txt=opt.txt, #'wl.opt', #
                        seg=seg,
                        wb=wb,
                        meas.elvs=meas.elvs,
+                       elvVolCrvFl = elvVolCrvFl,
                        new.npt.filename = new.npt.filename,
                        append.filename=append.filename,
                        path=path,

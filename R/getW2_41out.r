@@ -23,7 +23,10 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
   cy<-gsub('cy|CY','',strsplit(rev(strsplit(modOutDetails$Dir,"/")[[1]])[1],'_')[[1]][1])
   #cy<-gsub('cy','',unique(unlist(lapply(strsplit(modOutDetails$Dir,"/"),function(x) x[[1]]))))
   fls<-list.files(mod.path)
-  if(any(grepl('dynsplit_selective',fls))){
+  # Check if blending algorythm is on.
+  w2slns<-readLines(file.path(mod.path,'w2_con.npt'))
+  w2conSel<-w2slns[grep("MISCELL",w2slns)+1]
+  if(grepl('USGS',w2conSel)){
     # Read in temperature target
     temp.targs<-read.fwf(file.path(mod.path,'dynsplit_selective1.npt'),
                          skip=3,widths=rep(8,2),comment.char='#')
@@ -44,7 +47,7 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
   ## Setup reading temperature and flow output
   qwo.textfile<-optfls[grep(paste0('qwo_',modOutDetails$SegmentOutput),optfls)]
   two.textfile<-optfls[grep(paste0('two_',modOutDetails$SegmentOutput),optfls)]
-  print(paste0('reading output from',mod.path))
+  print(paste('reading output from',mod.path))
   wo<-get.dam.outflow.mod.output(
         path=mod.path,
         qwo.textfile=qwo.textfile,
@@ -53,10 +56,10 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
         )
   tnm<-'mod.t'
   qnm<-'mod.q|Q'
-
   if(exists('outlets')){
     floaters.exist<-any(!is.na(outlets$floaters)) & length(outlets$floaters)>1
-      if((floaters.exist|any(!unlist(sapply(outlets$power,is.finite)))) &
+      if((floaters.exist|
+          any(!unlist(sapply(outlets$power,is.finite)))) &
           !is.null(nrow(outlets$split2))){
         # Summarize by groups
         for(grp in 1:nrow(outlets$split2)){
@@ -123,7 +126,6 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
       ecols<-match(c('JDAY','mod.elv'),colnames(wo))
       eout<-apply.davg.oncols(wo[,ecols])
       colnames(eout)[-1]<-paste0('Davg_',colnames(eout)[-1])
-
       #str(tout);
       ###############################################
       #Calculate the Accumulated Thermal Units since atu.day of each scenario
@@ -181,28 +183,29 @@ getW2_41out<-function(mod.path=w2Dirs[w2ioi],
              rm(tcem)
           }
        }# End of percent time above/below critical temperature calculations
-       scnCols<-(1:ncol(tout))[-grep('JDAY',colnames(tout))]
+       #scnCols<-(1:ncol(tout))[-grep('JDAY',colnames(tout))]
+       modTcols <- grep('_mod',colnames(tout))
        atus<-foreach(atu=atu.day,.combine="rbind") %do% {
-               em<-foreach(scnCol=scnCols,.combine='cbind') %do% {
-                  calcEmergenceTiming(tout=tout[,c(match('JDAY',colnames(tout)),scnCol)],
+               em<-foreach(modTcol=modTcols,.combine='cbind') %do% {
+                  calcEmergenceTiming(tout=tout[,c(match('JDAY',colnames(tout)),modTcol)],
                                           atu.day = atu)[[1]]
                }
              em<-data.frame(aday=atu,em,stringsAsFactors=F)
-             colnames(em)<-c('aday',colnames(tout)[-1])
+             colnames(em)<-c('aday',colnames(tout)[modTcols])
              return(em)
        }
-       colnames(atus)[-1]<-gsub(tnm,'mmdd',colnames(tout)[-1])
+       colnames(atus)[-1]<-gsub(tnm,'mmdd',colnames(tout)[modTcols])
 
        atu.d<-foreach(atu=atu.day,.combine="rbind") %do% {
-         em<-foreach(scnCol=scnCols,.combine='cbind') %do% {
-           calcEmergenceTiming(tout=tout[,c(match('JDAY',colnames(tout)),scnCol)],
+         em<-foreach(modTcol=modTcols,.combine='cbind') %do% {
+           calcEmergenceTiming(tout=tout[,c(match('JDAY',colnames(tout)),modTcol)],
                                atu.day = atu)[[2]]
          }
          em<-data.frame(aday=atu,em,stringsAsFactors=F)
-         colnames(em)<-c('aday',colnames(tout)[-1])
+         colnames(em)<-c('aday',colnames(tout)[modTcols])
          return(em)
        }
-       colnames(atu.d)[-1]<-gsub(tnm,'aday',colnames(tout)[-1])
+       colnames(atu.d)[-1]<-gsub(tnm,'aday',colnames(tout)[modTcols])
        atu<-as.data.frame(cbind(atus,atu.d[,-1]),stringsAsFactors=F)
        atu$Year<-cy
        atu$Site<-modOutDetails$RESSIMCode

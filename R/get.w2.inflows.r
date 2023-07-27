@@ -29,7 +29,6 @@ get.w2.inflows<-function(path=NA,
   npt.names<-apply(q.nms,2,function(x)x[length(x)])
   npt.names<-gsub('[\\]','/',npt.names)
   print(npt.names)
-
   #################################################################################
   # read in each flow INPUT files, then take a daily average of the flow
   #source(paste(directory,'/r_functions/read.interp.r',sep=''))

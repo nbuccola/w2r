@@ -8,6 +8,7 @@
 #' @param new.npt.filename new balance flow file to write
 #' @param daystep number of days of averaging window; default to use the smallest timestep in model output
 #' @param meas.elvs filename for the measured elevations (csv format)
+#' @param elvVolCrvFl, #Elevation - Volume Curve filename
 #' @param rule.curve.filename filename for the optional Lake rule curve (csv format); if none then NA
 #' @param write.files Write a new distributed tributary inflow file? TRUE or FALSE
 #' @param save.plot Save a plot of the output? TRUE or FALSE
@@ -21,20 +22,21 @@
 #' @keywords CEQUALW2 water balance
 #' @examples
 #' waterBalance()
-#' @export
+#' @import ggplot2
 waterBalance<-function(opt.txt=NA,
-                           seg=NA, # Numeric
-                           wb=NA, #Numeric, which water body?
-                           new.npt.filename=NA,
-                           rule.curve.filename=NA,#'***.csv',
-                           daystep=1, # Number of days in which to average over daystep=NA will interpolate to model output
-                           path='/*',
-                           meas.elvs='***.npt',  #measured lake elevations
-                           write.files=T,
-                           save.plot=F,
-                           version=4,
-                           append.filename=NULL){
-  #browser()
+                       seg=NA, # Numeric
+                       wb=NA, #Numeric, which water body?
+                       new.npt.filename=NA,
+                       rule.curve.filename=NA,#'***.csv',
+                       daystep=1, # Number of days in which to average over daystep=NA will interpolate to model output
+                       path='/*',
+                       meas.elvs='***.npt',  #measured lake elevations
+                       elvVolCrvFl = NA,
+                       write.files=T,
+                       save.plot=F,
+                       version=4,
+                       append.filename=NULL){
+  library(ggplot2)
 
 # providing append.filename will append the named file with the latest water balance
   if(version>=4 ){ #|opt.txt=="wl.opt"
@@ -136,17 +138,29 @@ waterBalance<-function(opt.txt=NA,
   #str(extDays)
 
   ###############read in USACE elevation/volume curve from Pre-Processor ######
+  # Check for pre-processor output
   prelns<-readLines(paste0(path,'/pre.opt'))
-  vars<-paste0("Waterbody ",wb," Volume-Area-Elevation Table")
-  npt.lines<-grep(vars,prelns)+5
-  end.lines<-grep(" Layer",prelns[(npt.lines):length(prelns)])[1]
-  acoe.crv<-read.table(file.path(path,'pre.opt'),
-             skip=npt.lines[1],comment.char = "K",fill=T,
-             nrows=end.lines-8,stringsAsFactors = F
-             )[,c(2,4)]
-  acoe.crv<-as.data.frame(apply(acoe.crv,2,as.numeric))
-  acoe.crv<-acoe.crv[!apply(apply(acoe.crv,2,is.na),1,any),]
-  acoe.crv[,2]<-acoe.crv[,2]*1E6
+  if(length(prelns)>0){
+    vars<-paste0("Waterbody ",wb," Volume-Area-Elevation Table")
+    npt.lines<-grep(vars,prelns)+5
+    end.lines<-grep(" Layer",prelns[(npt.lines):length(prelns)])[1]
+    acoe.crv<-read.table(file.path(path,'pre.opt'),
+                         skip=npt.lines[1],comment.char = "K",fill=T,
+                         nrows=end.lines-8,stringsAsFactors = F
+    )[,c(2,4)]
+    acoe.crv<-as.data.frame(apply(acoe.crv,2,as.numeric))
+    acoe.crv<-acoe.crv[!apply(apply(acoe.crv,2,is.na),1,any),]
+    acoe.crv[,2]<-acoe.crv[,2]*1E6
+  }else{
+    if(!is.na(elvVolCrvFl)){
+      # if no pre-processor output, lookup vol-stage curve
+      acoe.crv<-read.csv(elvVolCrvFl,skip = 1,stringsAsFactors = F
+      )
+      acoe.crv<-acoe.crv[!apply(apply(acoe.crv,2,is.na),1,any),]
+      #acoe.crv[,2]<-acoe.crv[,2]*1E6
+    }
+
+  }
 
   # set up regression for volume as a function of elevation
   #crvmod<-lm('vol.m.3. ~ elev.m.',acoe.crv,);#str(crvmod);summary(crvmod)
@@ -182,7 +196,7 @@ waterBalance<-function(opt.txt=NA,
 
     if(!is.null(append.filename)){
       # Set a max threshold elevation difference to ignore modifying the oldwaterbalance
-      maxElvDif_m <- 0.5
+      maxElvDif_m <- 2
       newJDAY <- compElvs$JDAY[abs(compElvs$WSELV_fit)>maxElvDif_m][1]
       print(paste0('Adding new water balance (QDT) to ',append.filename, ' beginning on JDAY ',newJDAY))
       new.npt.filename<-append.filename
@@ -239,7 +253,6 @@ waterBalance<-function(opt.txt=NA,
     print('Water balance (QDT) not written')
   }
 
-
   if(save.plot){
     # add fitstats
     compElvsL$Data<-as.factor(compElvsL$Data)
@@ -254,8 +267,8 @@ waterBalance<-function(opt.txt=NA,
                 show.legend = FALSE) +
       facet_grid(Data~.,scales = 'free') +
       theme(legend.position = 'top')
-    ggplot2::ggsave(p,filename = file.path(path,paste0('WB_',gsub('.csv','',meas.elvs),
-                                              format(Sys.time(), "%Y-%m-%d_%H%M"),'.png')),
+    ggplot2::ggsave(p,filename = file.path(path,paste0('WB',wb,'_',
+                                                       format(Sys.time(), "%Y-%m-%d_%H%M"),'.png')),
            device = 'png',
            width = 9,height=6)
   }

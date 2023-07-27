@@ -7,11 +7,15 @@
 #' @keywords CEQUALW2 read w2_selective.npt
 #' @examples
 #' readW2ConInOut()
-#' @export
+#' @import foreach
 readW2Selective<-function(path=path){
   # these are the rows of the W2selective.npt file to read
   #library(foreach)
-  fl<-file.path(path,'w2_selective.npt')
+  w2Pth<-paste0(path,'/w2_con.npt')
+  w2slns<-readLines(w2Pth)
+  w2conSelFl<-gsub(' ','',w2slns[grep('SEL FILE',w2slns)+1])
+  print(paste0('opening ',w2conSelFl))
+  fl<-file.path(path,w2conSelFl) # Should be something like 'w2_selective.npt'
   w2slns<-readLines(fl)
   npt.lines<-unlist(sapply(c("SPLIT1","SPLIT2","SPLITOUT","DEPTH","PRIORITY"),grep,w2slns))
   splitNum<-as.numeric(read.fwf(fl,widths=rep(8,10),
