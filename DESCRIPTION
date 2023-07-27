@@ -1,14 +1,17 @@
 Package: w2r
 Title: Tools to interface with the CE-QUAL-W2 hydrodynamic water quality model
-Version: 0.0.0.1
-Authors@R: person("Norman", "Buccola", email = "norman.buccola@usace.army.mil", role = c("aut", "cre"))
+Version: 0.0.0.2
+Authors@R: 
+    person(given = "Norman",
+           family = "Buccola",
+           role = c("aut", "cre"),
+           email = "norman.buccola@usace.army.mil",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: Functions to interface with the CE-QUAL-W2: read the control file, calculate the water balance, re-write the initial water surface boundary condition, etc. 
-Depends: R (>= 3.5.1)
-License: What license is it under?
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
-Imports:
-    gdata,
-    reshape2,
-    ggplot2
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: ggplot2, foreach
