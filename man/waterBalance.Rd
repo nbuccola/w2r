@@ -13,6 +13,7 @@ waterBalance(
   daystep = 1,
   path = "/*",
   meas.elvs = "***.npt",
+  elvVolCrvFl = NA,
   write.files = T,
   save.plot = F,
   version = 4,
@@ -33,6 +34,8 @@ waterBalance(
 \item{daystep}{number of days of averaging window; default to use the smallest timestep in model output}
 
 \item{meas.elvs}{filename for the measured elevations (csv format)}
+
+\item{elvVolCrvFl, }{#Elevation - Volume Curve filename}
 
 \item{write.files}{Write a new distributed tributary inflow file? TRUE or FALSE}
 

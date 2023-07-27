@@ -4,18 +4,20 @@
 \alias{readW2ConInOut}
 \title{Wrapper function for waterBalance function}
 \usage{
-readW2ConInOut(path, wd, seg, wb, RESSIMCode, write.files)
+readW2ConInOut(path, wd, seg, wb, RESSIMCode, elvVolCrvFl, write.files)
 }
 \arguments{
-\item{path, }{# path to model}
+\item{path, }{path to model}
 
-\item{wd, }{# Generic path to find functions}
+\item{wd, }{Generic path to find functions}
 
 \item{seg, }{#Segment to look up in w2_con.npt}
 
 \item{wb, }{#Water body to look up in w2_con.npt}
 
 \item{RESSIMCode, }{#RES-SIM name for boundary conditions}
+
+\item{elvVolCrvFl, }{#Elevation - Volume Curve}
 
 \item{write.files}{#T/F on whether or not to write file}
 }
