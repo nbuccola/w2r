@@ -116,7 +116,8 @@ waterBalance<-function(opt.txt=NA,
   }
 
   # Calcualte fitstats
-  fitstats<-w2r::errs(compElvs[,c('meas','mod')])[,c(1,4,5)]
+  #fitstats<-w2r::errs(compElvs[,c('meas','mod')])[,c(1,4,5)]
+  fitstats<-errs(compElvs[,c('meas','mod')])[,c(1,4,5)]
   if(fitstats$MAE>0.75){
     save.plot<-T
   }else{
@@ -222,7 +223,7 @@ waterBalance<-function(opt.txt=NA,
       watbalance<-watbalanceNew; rm(watbalanceNew)
     }else{
       print(paste0('Writing new water balance (QDT) to ',new.npt.filename))
-      new.npt.filename<-paste0('WB_',gsub(".csv",new.npt.filename,meas.elvs))
+      new.npt.filename<-gsub(".csv",new.npt.filename,meas.elvs)
     }
     watbalanceL<-reshape2::melt(watbalance,id.vars = 'JDAY')
     watbalanceL$Data<-'QDT_Flow_cms'

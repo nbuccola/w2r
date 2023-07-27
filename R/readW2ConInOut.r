@@ -147,7 +147,7 @@ readW2ConInOut<-function(path, # path to model
   meas.elvs<-list.files(path)
   meas.elvs<-meas.elvs[grepl("ELEV|elev|WSELV",meas.elvs) &
                        grepl(RESSIMCode,meas.elvs) &
-                       !grepl('png',meas.elvs)]#,pattern="ELEV.csv")
+                       !grepl('qwb|png',meas.elvs)]#,pattern="ELEV.csv")
   if(length(meas.elvs)<1){
     meas.elvsFldr<-strsplit(npti,'\\\\')[[1]]
     yr <- strsplit(meas.elvsFldr[length(meas.elvsFldr)],'_')[[1]]
@@ -183,7 +183,7 @@ readW2ConInOut<-function(path, # path to model
   tsrs<-list.files(path,pattern="tsr_")
   opt.txt<-tsrs[grep(paste0('seg',seg),tsrs)]
   opt.txt<-opt.txt[1]
-  #source("C:/Users/g2echnb9/Documents/R/w2r_dev/R/waterBalanceGeneric.r")
+  #source("C:/Users/g2echnb9/Documents/R/w2r/R/waterBalanceGeneric.r")
   watbal<-waterBalance(opt.txt='wl.opt', # opt.txt, #
                        seg=seg,
                        wb=wb,
