@@ -140,8 +140,10 @@ readW2ConInOut<-function(path, # path to model
   # }
   qfls<-list.files(file.path(path),pattern=paste0('qwo_',seg,'\\**'))
   # Read in outflows
+  print(paste('Reading',qfls))
   Qot<-read.csv(file.path(path,qfls),skip=3,header=F,stringsAsFactors = F)[,c(1:2)]
   colnames(Qot)<-c('JDAY',paste0('qwo_',seg))
+  #Read Elevation file boundary conditions
   meas.elvs<-list.files(path)
   meas.elvs<-meas.elvs[grepl("ELEV|elev|WSELV",meas.elvs) &
                        grepl(RESSIMCode,meas.elvs) &
@@ -181,9 +183,8 @@ readW2ConInOut<-function(path, # path to model
   tsrs<-list.files(path,pattern="tsr_")
   opt.txt<-tsrs[grep(paste0('seg',seg),tsrs)]
   opt.txt<-opt.txt[1]
-  print(paste0('Calculating Water Balance based on ',opt.txt))
-  source("C:/Users/g2echnb9/Documents/R/w2r_dev/R/waterBalanceGeneric.r")
-  watbal<-waterBalance(opt.txt=opt.txt, #'wl.opt', #
+  #source("C:/Users/g2echnb9/Documents/R/w2r_dev/R/waterBalanceGeneric.r")
+  watbal<-waterBalance(opt.txt='wl.opt', # opt.txt, #
                        seg=seg,
                        wb=wb,
                        meas.elvs=meas.elvs,

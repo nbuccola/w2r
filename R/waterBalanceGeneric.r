@@ -51,6 +51,7 @@ waterBalance<-function(opt.txt=NA,
       mod.opt<- read.table(file.path(path,opt.txt), header=TRUE,
                        skip=11,stringsAsFactors = F)
   }
+  print(paste0('Calculating Water Balance based on ',opt.txt))
   #str(mod.opt); head(mod.opt)
   #############Get the measured elevations and compare#########
   elvHdr <-readLines(file.path(path,meas.elvs),1)
@@ -139,8 +140,8 @@ waterBalance<-function(opt.txt=NA,
 
   ###############read in USACE elevation/volume curve from Pre-Processor ######
   # Check for pre-processor output
-  prelns<-readLines(paste0(path,'/pre.opt'))
-  if(length(prelns)>0){
+  if(file.exists(paste0(path,'/pre.opt'))){
+    prelns<-readLines(paste0(path,'/pre.opt'))
     vars<-paste0("Waterbody ",wb," Volume-Area-Elevation Table")
     npt.lines<-grep(vars,prelns)+5
     end.lines<-grep(" Layer",prelns[(npt.lines):length(prelns)])[1]
