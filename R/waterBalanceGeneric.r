@@ -141,7 +141,7 @@ waterBalance<-function(opt.txt=NA,
 
   ###############read in USACE elevation/volume curve from Pre-Processor ######
   # Check for pre-processor output
-  if(file.exists(paste0(path,'/pre.opt'))){
+  if(is.na(elvVolCrvFl) & file.exists(paste0(path,'/pre.opt'))){
     prelns<-readLines(paste0(path,'/pre.opt'))
     vars<-paste0("Waterbody ",wb," Volume-Area-Elevation Table")
     npt.lines<-grep(vars,prelns)+5
