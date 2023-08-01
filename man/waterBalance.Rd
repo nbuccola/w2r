@@ -27,23 +27,23 @@ waterBalance(
 
 \item{wb}{numeric; which water body to get from W2 model output}
 
-\item{new.npt.filename}{new balance flow file to write}
+\item{new.npt.filename}{string new balance flow file to write}
 
-\item{rule.curve.filename}{filename for the optional Lake rule curve (csv format); if none then NA}
+\item{rule.curve.filename}{string filename for the optional Lake rule curve (csv format); if none then NA}
 
-\item{daystep}{number of days of averaging window; default to use the smallest timestep in model output}
+\item{daystep}{numeric number of days of averaging window; default to use the smallest timestep in model output}
 
-\item{meas.elvs}{filename for the measured elevations (csv format)}
+\item{meas.elvs}{string filename for the measured elevations (csv format)}
 
-\item{elvVolCrvFl, }{#Elevation - Volume Curve filename}
+\item{elvVolCrvFl}{string #Elevation - Volume Curve filename}
 
-\item{write.files}{Write a new distributed tributary inflow file? TRUE or FALSE}
+\item{write.files}{logical Write a new distributed tributary inflow file? TRUE or FALSE}
 
-\item{save.plot}{Save a plot of the output? TRUE or FALSE}
+\item{save.plot}{logical Save a plot of the output? TRUE or FALSE}
 
 \item{version}{numeric CE-QUAL-W2 version number; if 4 or greater, output is csv format!; otherwise, it's fixed width (8 space columns)}
 
-\item{append.filename}{will append the named file with the new water balance file; if NULL, new.npt.filename will be used to write a new QDT file}
+\item{append.filename}{logical will append the named file with the new water balance file; if NULL, new.npt.filename will be used to write a new QDT file}
 }
 \value{
 \item{fit}{a data.frame of the model to observed fit statistics}

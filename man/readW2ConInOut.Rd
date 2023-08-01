@@ -2,29 +2,31 @@
 % Please edit documentation in R/readW2ConInOut.r
 \name{readW2ConInOut}
 \alias{readW2ConInOut}
-\title{Wrapper function for waterBalance function}
+\title{Wrapper function for waterBalance function
+This function will grab inputs from CE-QUAL-W2 model (w2_con.npt file), lookup filenames, and then use them as input to the waterBalance function within the w2r package.}
 \usage{
 readW2ConInOut(path, wd, seg, wb, RESSIMCode, elvVolCrvFl, write.files)
 }
 \arguments{
-\item{path, }{path to model}
+\item{path}{string # path to model}
 
-\item{wd, }{Generic path to find functions}
+\item{wd}{string # Generic path to find functions}
 
-\item{seg, }{#Segment to look up in w2_con.npt}
+\item{seg}{numeric #Segment to look up in w2_con.npt}
 
-\item{wb, }{#Water body to look up in w2_con.npt}
+\item{wb}{numeric #Water body to look up in w2_con.npt}
 
-\item{RESSIMCode, }{#RES-SIM name for boundary conditions}
+\item{RESSIMCode}{string #RES-SIM name for boundary conditions}
 
-\item{elvVolCrvFl, }{#Elevation - Volume Curve}
+\item{elvVolCrvFl}{data.frame #Elevation - Volume Curve}
 
-\item{write.files}{#T/F on whether or not to write file}
+\item{write.files}{logical #T/F on whether or not to write file}
 }
 \value{
 \item{watbal}{output from the waterBalance function}
 }
 \description{
+Wrapper function for waterBalance function
 This function will grab inputs from CE-QUAL-W2 model (w2_con.npt file), lookup filenames, and then use them as input to the waterBalance function within the w2r package.
 }
 \examples{
