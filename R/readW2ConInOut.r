@@ -1,14 +1,12 @@
 #' Wrapper function for waterBalance function
-#'
 #' This function will grab inputs from CE-QUAL-W2 model (w2_con.npt file), lookup filenames, and then use them as input to the waterBalance function within the w2r package.
-#'
-#' @param path, # path to model
-#' @param wd,  # Generic path to find functions
-#' @param seg, #Segment to look up in w2_con.npt
-#' @param wb, #Water body to look up in w2_con.npt
-#' @param RESSIMCode, #RES-SIM name for boundary conditions
-#' @param elvVolCrvFl, #Elevation - Volume Curve
-#' @param write.files #T/F on whether or not to write file
+#' @param path string # path to model
+#' @param wd string # Generic path to find functions
+#' @param seg numeric #Segment to look up in w2_con.npt
+#' @param wb numeric #Water body to look up in w2_con.npt
+#' @param RESSIMCode string #RES-SIM name for boundary conditions
+#' @param elvVolCrvFl data.frame #Elevation - Volume Curve
+#' @param write.files logical #T/F on whether or not to write file
 #' @return
 #' \item{watbal}{output from the waterBalance function}
 #' @author Norman Buccola
@@ -16,7 +14,6 @@
 #' @examples
 #' readW2ConInOut()
 #' @export
-# Read in the number of branches (QIN) and gates (QGT)
 readW2ConInOut<-function(path, # path to model
                          wd,  # Generic path to find functions
                          seg, #Segment to look up

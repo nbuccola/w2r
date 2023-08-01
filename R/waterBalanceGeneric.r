@@ -5,14 +5,14 @@
 #' @param opt.txt Defaults to reading in the wl.opt file, but can specify a "*.tsr" output from W2
 #' @param seg numeric; which segment to get wselv from W2 output
 #' @param wb numeric; which water body to get from W2 model output
-#' @param new.npt.filename new balance flow file to write
-#' @param daystep number of days of averaging window; default to use the smallest timestep in model output
-#' @param meas.elvs filename for the measured elevations (csv format)
-#' @param elvVolCrvFl, #Elevation - Volume Curve filename
-#' @param rule.curve.filename filename for the optional Lake rule curve (csv format); if none then NA
-#' @param write.files Write a new distributed tributary inflow file? TRUE or FALSE
-#' @param save.plot Save a plot of the output? TRUE or FALSE
-#' @param append.filename will append the named file with the new water balance file; if NULL, new.npt.filename will be used to write a new QDT file
+#' @param new.npt.filename string new balance flow file to write
+#' @param daystep numeric number of days of averaging window; default to use the smallest timestep in model output
+#' @param meas.elvs string filename for the measured elevations (csv format)
+#' @param elvVolCrvFl string #Elevation - Volume Curve filename
+#' @param rule.curve.filename string filename for the optional Lake rule curve (csv format); if none then NA
+#' @param write.files logical Write a new distributed tributary inflow file? TRUE or FALSE
+#' @param save.plot logical Save a plot of the output? TRUE or FALSE
+#' @param append.filename logical will append the named file with the new water balance file; if NULL, new.npt.filename will be used to write a new QDT file
 #' @param version numeric CE-QUAL-W2 version number; if 4 or greater, output is csv format!; otherwise, it's fixed width (8 space columns)
 #' @return
 #' \item{fit}{a data.frame of the model to observed fit statistics}
@@ -23,6 +23,7 @@
 #' @examples
 #' waterBalance()
 #' @import ggplot2
+#' @export
 waterBalance<-function(opt.txt=NA,
                        seg=NA, # Numeric
                        wb=NA, #Numeric, which water body?
@@ -198,7 +199,7 @@ waterBalance<-function(opt.txt=NA,
 
     if(!is.null(append.filename)){
       # Set a max threshold elevation difference to ignore modifying the oldwaterbalance
-      maxElvDif_m <- 2
+      maxElvDif_m <- 0.75
       newJDAY <- compElvs$JDAY[abs(compElvs$WSELV_fit)>maxElvDif_m][1]
       print(paste0('Adding new water balance (QDT) to ',append.filename, ' beginning on JDAY ',newJDAY))
       new.npt.filename<-append.filename
