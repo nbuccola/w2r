@@ -165,6 +165,8 @@ readW2ConInOut<-function(path, # path to model
   if(qdtSwitch=="ON"){ #append old water balance file if QDT was ON
     append.filename<-varnums[["QDT FILE"]][1]
     new.npt.filename<-NA
+    # backup QDT file
+    file.copy(append.filename, paste0(append.filename, ".backup"))
     print('QDT set to ON in w2_con.npt')
     #meas.elvs<-meas.elvs[grep(gsub("_.*","",append.filename),meas.elvs)]
   }else{ #write a new water balance file if QDT was OFF
