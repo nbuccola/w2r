@@ -17,7 +17,8 @@ waterBalance(
   write.files = T,
   save.plot = F,
   version = 4,
-  append.filename = NULL
+  append.filename = NULL,
+  maxElvDif_m = 0.75
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ waterBalance(
 \item{version}{numeric CE-QUAL-W2 version number; if 4 or greater, output is csv format!; otherwise, it's fixed width (8 space columns)}
 
 \item{append.filename}{logical will append the named file with the new water balance file; if NULL, new.npt.filename will be used to write a new QDT file}
+
+\item{maxElvDif_m}{numeric (meters) threshold in which to ignore water balance changes}
 }
 \value{
 \item{fit}{a data.frame of the model to observed fit statistics}

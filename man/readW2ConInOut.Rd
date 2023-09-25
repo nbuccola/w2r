@@ -5,7 +5,16 @@
 \title{Wrapper function for waterBalance function
 This function will grab inputs from CE-QUAL-W2 model (w2_con.npt file), lookup filenames, and then use them as input to the waterBalance function within the w2r package.}
 \usage{
-readW2ConInOut(path, wd, seg, wb, RESSIMCode, elvVolCrvFl, write.files)
+readW2ConInOut(
+  path,
+  wd,
+  seg,
+  wb,
+  RESSIMCode,
+  elvVolCrvFl,
+  write.files,
+  maxElvDif_m
+)
 }
 \arguments{
 \item{path}{string # path to model}
@@ -21,6 +30,8 @@ readW2ConInOut(path, wd, seg, wb, RESSIMCode, elvVolCrvFl, write.files)
 \item{elvVolCrvFl}{data.frame #Elevation - Volume Curve}
 
 \item{write.files}{logical #T/F on whether or not to write file}
+
+\item{maxElvDif_m}{numeric (meters) threshold in which to ignore water balance changes}
 }
 \value{
 \item{watbal}{output from the waterBalance function}
