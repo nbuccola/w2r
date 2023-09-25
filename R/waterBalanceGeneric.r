@@ -13,6 +13,7 @@
 #' @param write.files logical Write a new distributed tributary inflow file? TRUE or FALSE
 #' @param save.plot logical Save a plot of the output? TRUE or FALSE
 #' @param append.filename logical will append the named file with the new water balance file; if NULL, new.npt.filename will be used to write a new QDT file
+#' @param maxElvDif_m numeric (meters) threshold in which to ignore water balance changes
 #' @param version numeric CE-QUAL-W2 version number; if 4 or greater, output is csv format!; otherwise, it's fixed width (8 space columns)
 #' @return
 #' \item{fit}{a data.frame of the model to observed fit statistics}
@@ -36,7 +37,8 @@ waterBalance<-function(opt.txt=NA,
                        write.files=T,
                        save.plot=F,
                        version=4,
-                       append.filename=NULL){
+                       append.filename=NULL,
+                       maxElvDif_m = 0.75){
   library(ggplot2)
 
 # providing append.filename will append the named file with the latest water balance
@@ -199,7 +201,6 @@ waterBalance<-function(opt.txt=NA,
 
     if(!is.null(append.filename)){
       # Set a max threshold elevation difference to ignore modifying the oldwaterbalance
-      maxElvDif_m <- 0.75
       newJDAY <- compElvs$JDAY[abs(compElvs$WSELV_fit)>maxElvDif_m][1]
       print(paste0('Adding new water balance (QDT) to ',append.filename, ' beginning on JDAY ',newJDAY))
       new.npt.filename<-append.filename
