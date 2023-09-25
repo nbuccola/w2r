@@ -7,6 +7,7 @@
 #' @param RESSIMCode string #RES-SIM name for boundary conditions
 #' @param elvVolCrvFl data.frame #Elevation - Volume Curve
 #' @param write.files logical #T/F on whether or not to write file
+#' @param maxElvDif_m numeric (meters) threshold in which to ignore water balance changes
 #' @return
 #' \item{watbal}{output from the waterBalance function}
 #' @author Norman Buccola
@@ -20,7 +21,8 @@ readW2ConInOut<-function(path, # path to model
                          wb, #Water body to look at
                          RESSIMCode, #RES-SIM name for boundary conditions
                          elvVolCrvFl, # Elevation - Volume Curve
-                         write.files #T/F on whether or not to write file
+                         write.files, #T/F on whether or not to write file
+                         maxElvDif_m #numeric (meters) threshold in which to ignore water balance changes
                          ){
   #setwd(wd)
   # source(file.path(wd,'r_functions/errs.r'))
@@ -165,6 +167,8 @@ readW2ConInOut<-function(path, # path to model
   if(qdtSwitch=="ON"){ #append old water balance file if QDT was ON
     append.filename<-varnums[["QDT FILE"]][1]
     new.npt.filename<-NA
+    # backup QDT file
+    file.copy(append.filename, paste0(append.filename, ".backup"))
     print('QDT set to ON in w2_con.npt')
     #meas.elvs<-meas.elvs[grep(gsub("_.*","",append.filename),meas.elvs)]
   }else{ #write a new water balance file if QDT was OFF
@@ -190,7 +194,8 @@ readW2ConInOut<-function(path, # path to model
                        append.filename=append.filename,
                        path=path,
                        write.files=write.files,
-                       save.plot=save.plot)
+                       save.plot=save.plot,
+                       maxElvDif_m = maxElvDif_m)
   print(watbal$fit)
 
 
