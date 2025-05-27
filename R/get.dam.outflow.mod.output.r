@@ -95,7 +95,6 @@ get.dam.outflow.mod.output<-
     }
 
     if(!is.na(qwo.textfile)){
-
       #MERGE THE TWO AND QWO FILES!!!
       # find the missing days
       opt<-merge.interp.24hr(x1=qwo,x2=two)
@@ -103,11 +102,11 @@ get.dam.outflow.mod.output<-
       zeroqCols<-which(apply(apply(opt,2,function(x)x==0|is.na(x)),2,all))
       if(any(zeroqCols!=0)){
         zeroqCols<-unique(substr(colnames(opt)[zeroqCols],2,3))
-        zeroqColsWtemp <- unlist(sapply(paste0('T',zeroqCols),grep,colnames(opt)))
-        zeroqCols <- zeroqCols[zeroqCols!=substr(names(zeroqColsWtemp),2,3)]
+        zeroqColsWtemp <- !paste0('T',zeroqCols) %in% colnames(opt)
+        zeroqCols <- zeroqCols[zeroqColsWtemp]
         zeroCols.j<-unique(unlist(sapply(zeroqCols,grep,colnames(opt))))
         if(length(zeroCols.j)>0){
-          print(paste("Removing Zero Column Flows:",
+          print(paste("Removing Columns with No Temp and Zero Flow:",
                     toString(colnames(opt)[zeroCols.j])))
           opt<-opt[,-zeroCols.j]
         }
